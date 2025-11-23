@@ -1,0 +1,194 @@
+/*----------------------------------------------------------------------------
+ *----------------------------------------------------------------------------*/
+#include <MKL25Z4.H>
+
+
+__asm void machine(int *useractivation,int *pumpactivation){
+	
+
+  PUSH {r4-r5,lr}
+	
+	LDR r4,[r2]
+	LDR r0,[r0]
+  STR r0,[r4]
+	ADDS r4,r4,#0x04
+	LDR r1,[r1]
+  STR r1,[r4]
+	ADDS r4,r4,#0x04
+	STR  r4,[r2] 
+	
+
+		
+	POP  {r4-r5,pc}
+	
+}
+
+
+__asm void user(int *useractivation,int *pumpactivation,int *usermoney,float *a){
+	
+  PUSH {r4-r5,lr}
+	
+	LDR r0,[r0]       // user's activation
+	LDR r1,[r1]	      // user's pumpactivation
+	
+	LDR r2,[r2]       // user's money
+  LDR r3,[r3]       //0.3
+	
+  
+	SUBS r4,r4,#0x0C
+	
+	LDR r5,[r4]
+	CMP r0,r5
+  BEQ insert_money_low
+  b exit
+
+insert_money_low     //user insert money
+  	CMP  r2,#0x05
+	  BHS  insert_money_high
+	  b exit
+	
+insert_money_high
+	  CMP   r2,#0xC8
+	  BLE   pump_activation
+	  b exit
+	  
+	
+
+
+pump_activation     //pump activation
+	ADDS r4,r4,#0x04
+	LDR  r5,[r4]
+	CMP  r1,r5
+	BEQ  gas_output
+	b exit
+	
+gas_output
+  
+  LSLS r2,r2,#1   //Transform money to gas
+	STR  r2,[r6]
+	ADDS r5,r0,r1    // r5=3
+	ADDS r0,r3,#0x00 //r0=0.3
+	SUBS r3,r1,r1   // r3=0
+	MOVS r7,#0x00   //r7=0
+	
+loop1                   // Divide by 3
+   CMP  r2,r5
+	 BLT  Done
+   ADDS r3,r3,#1
+	 SUBS r2,r2,r5
+   b loop1
+	 
+
+	
+   
+Done
+  ADDS r7,r7,r3 	  //Clear Amount of Gas
+	ADDS r6,r7,#0x00  //Keep Clear Amount of Gas in R6
+  CMP  r7,#0x06
+	BEQ  ypodiastoli_06
+	CMP  r7,#0x042
+	BEQ  ypodiastoli_06
+	
+	CMP  r7,#0x01
+	BEQ  ypodiastoli_03
+	CMP  r7,#0x0D
+	BEQ  ypodiastoli_03
+	CMP  r7,#0x021
+	BEQ  ypodiastoli_03
+	CMP  r7,#0x085
+	BEQ  ypodiastoli_03
+  
+	
+	
+ypodiastoli_06
+  
+  ADDS r0,r0,r0
+	ADDS r7,r7,r0
+	STR  r7,[r4]       //Total Gas Amount Stored ((Clear Amount of Gas)+0.6)
+	b seconds
+	
+ypodiastoli_03
+  
+	
+  ADDS r7,r7,r0
+	STR r7,[r4]        //Total Gas Amount Stored ((Clear Amount of Gas)+0.3)
+	b seconds
+	
+	             
+seconds	
+	
+	ADDS r5,r6,r6            //Pump's working seconds
+  LSLS r6,r6,#3  
+  ADDS r6,r6,r5
+	b loop
+	
+	
+	
+	
+	
+	
+loop                            //Seconds for pump's function
+    
+	  SUBS r6,r6,#1
+		CMP  r6,#0
+		BNE loop
+		b exit_gas
+		
+
+	
+	
+	
+	
+  	
+
+
+exit
+  MOVS r3,#0    //No gas
+
+
+exit_gas
+
+  POP  {r4-r5,pc}
+	
+	
+
+
+
+
+  
+}
+
+
+
+int main(void){
+	int uact=0x01;
+	int pumpact=0x02;
+	int money=0x32;
+	float a=0.3;
+  
+	
+	
+	int *uact1=&uact;
+	int *pumpact1=&pumpact;
+	int *money1=&money;
+	float *num1=&a;
+	
+	int *mact=&uact;
+	int *mpumpact=&pumpact;
+	
+	
+	machine(mact,mpumpact);
+	
+	user(uact1,pumpact1,money1,num1);
+	
+	
+	
+	
+	
+		
+	
+	
+	while (1)
+			;
+}
+// *******************************ARM University Program Copyright © ARM Ltd 2013*************************************   
