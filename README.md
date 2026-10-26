@@ -48,8 +48,6 @@ These functions exchange data through registers and memory, enforcing simple rul
 
 ## 3. Repository Structure
 
-> Note: Actual filenames and folders may differ slightly depending on your setup.  
-> Adjust this section to match the exact structure of your project.
 
 Typical layout:
 
