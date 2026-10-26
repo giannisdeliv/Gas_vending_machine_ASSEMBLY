@@ -44,36 +44,7 @@ These functions exchange data through registers and memory, enforcing simple rul
 - **IDE / Toolchain:** Keil µVision (ARM Compiler)
 - **Debug / Programming:** OpenSDA / CMSIS-DAP (depending on your board configuration)
 
----
 
-## 3. Repository Structure
-
-
-Typical layout:
-
-```text
-Gas_vending_machine_ASSEMBLY/
-├─ Project/
-│  ├─ BasicUI.uvprojx          # Keil µVision project file
-│  ├─ src/
-│  │  ├─ main.c                # Main C source file
-│  │  ├─ machine.s             # ARM assembly for vending machine logic (example name)
-│  │  └─ user.c / user.s       # User-related code (example name)
-│  ├─ system_MKL25Z4.c         # System initialization for KL25Z
-│  ├─ startup_MKL25Z4.s        # Startup code & vector table
-│  ├─ RTE/
-│  │  └─ RTE_Components.h      # RTE configuration header
-│  └─ ...                      # Other project support files
-│
-├─ docs/
-│  └─ Gas_vending_machine_report_EN.docx   # English project report (theory & details)
-│
-└─ README.md                   # This file
-
-
-POSSIBLE EXTENSIONS
-
-This project can be extended in several ways:
 
 1.Add a user interface (buttons, LEDs, LCD, UART menu, etc.).
 2.Implement error codes or status messages.
